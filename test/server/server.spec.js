@@ -19,6 +19,7 @@ AWS.config.credentials = credentials;
 AWS.config.update({region: 'us-west-1'});
 const s3 = new AWS.S3();
 
+<<<<<<< 2bcb35b526f636cb2a16e0bc215619616257ac41:test/server/server.spec.js
 describe('Back End', function() {
   describe('Server: ', function() {
     describe('GET media', function(done){
@@ -110,6 +111,9 @@ describe('Back End', function() {
     });
 
   });
+=======
+describe('BackEnd', function() {
+>>>>>>> Edit server test:test/server.spec.js
 
   describe('Database: ', function() {
 
