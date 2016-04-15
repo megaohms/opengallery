@@ -1,6 +1,7 @@
 import messageModal from '../components/messageFeed/messageModal'
 import { connect } from 'react-redux'
-import  { toggleMessageModal, submitMessage } from '../actions/messageFeed.actions'
+import  { toggleMessageModal, submitMessage, updateMessage } from '../actions/messageFeed.actions'
+
 
 const mapStateToProps = (state, props) => {
   return {
@@ -11,14 +12,16 @@ const mapStateToProps = (state, props) => {
     username: state.user.username,
     id: state.user.id,
     currentConversation: state.messageFeed.currentConversation,
-    person_name: state.messageFeed.person_name,
-    textModalField: state.form.messageModal
+    person_username: state.messageFeed.person_username,
+    textModalField: state.form.messageModal,
+    hideConversationsInMessageModal: state.view.hideConversationsInMessageModal
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     toggleMessageModal: () => {
+      console.log('called');
       dispatch(toggleMessageModal());
     },
     submitMessage: (user1_id, user2_id, message, createdAt, currentConversation) => {
@@ -30,6 +33,14 @@ const mapDispatchToProps = (dispatch) => {
         type: 'MESSAGE_MODAL_FIELD',
         payload: { input: value }
       })
+    },
+    toggleConversations: () => {
+      dispatch({
+        type: 'TOGGLE_CONVERSATIONS'
+      })
+    },
+    updateMessage: (message) => {
+      dispatch(updateMessage(message));
     }
   }
 }

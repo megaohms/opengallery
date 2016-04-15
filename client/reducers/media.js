@@ -60,7 +60,7 @@ const media = (state = startingState, {type, payload, meta}) => {
       })
 
     case UPDATE_WORDMAP:
-      wordmap.addFeedback(state, { payload, ...meta })
+      return wordmap.addFeedback(state, { payload, ...meta })
       break
 
     default:

@@ -1,11 +1,36 @@
 #grid-component
-  position: relative
-  display: flex
-  flex-wrap: wrap
-  z-index: 1099
+  position: absolute
+  top: 100px
+  padding: 0 15px
+  width: calc(100% - ($app-padding * 2))
 
-  .tile-component
-    flex: auto
-    width: 433px
-    height: 40vh
-    margin: 2.5px
+  #grid-error
+    position: fixed
+    color: white
+    font-size: 1.5em
+    text-align: center
+    width: 150px
+    padding: 15px
+    background-color: $logo-red
+    top: 50%
+    left: 50%
+    +transform(translate3d(-50%, -50%, 0))
+
+  .grid-section
+    +display(flex)
+    +flex-wrap(wrap)
+    z-index: 1099
+
+    .grid-tile-container
+      +flex(auto)
+      width: 433px
+      height: 40vh
+      margin: 15px
+
+  .grid-load-button
+    position: relative
+    margin: 15px 0
+    +display(flex)
+    +flex-wrap(wrap)
+    +justify-content(center)
+    z-index: 1099

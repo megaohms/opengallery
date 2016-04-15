@@ -12,11 +12,22 @@ if (isNode() !== true) {
 const user = (state=startingState, action) => {
   switch (action.type) {
     case 'STORE_USER_DATA':
-    console.log('action payload', action.payload);
       return Object.assign({}, state, action.payload)
     case 'SWITCH_EDIT_MODE':
       return Object.assign({}, state, {
         editMode: !state.editMode
+      })
+    case 'SWITCH_DELETE_MODE':
+      return Object.assign({}, state, {
+        deleteMode: !state.deleteMode
+      })
+    case 'ADD_DELETE_PHOTO':
+      return Object.assign({}, state, {
+        photosToBeDeleted: [...state.photosToBeDeleted, action.payload.photo]
+      })
+    case 'UNSTAGE_DELETE_PHOTO':
+      return Object.assign({}, state, {
+        photosToBeDeleted: ''
       })
     default:
       return state;

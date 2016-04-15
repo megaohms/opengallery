@@ -19,18 +19,21 @@ module.exports = function (app, express) {
 
   app.get('/api/media', Media.getPhotos); 
   app.post('/api/media/upload', multer().single('artImage'), Media.uploadPhoto);
-  app.put('/api/media/edit', Media.updatePhoto);
-  app.delete('api/media/delete', Media.deletePhoto);
-  // app.post('/api/media/edit', Media.updatePhoto);
+  // app.put('/api/media/edit', Media.updatePhoto);
+  app.post('/api/media/delete', Media.deletePhotos);
 
   app.post('/api/message/submitMessage', Messages.submitMessage);
   app.post('/api/message/fetchConversations', Messages.fetchConversations);
   app.post('/api/message/fetchMessages', Messages.fetchMessages);
+  app.post('/api/message/fetchConversation', Messages.fetchOrCreateConversation);
 
   app.post('/api/feedback/submitFeedback', Feedback.submitFeedback)
 
   app.get('/api/vision', Vision.detectLabels)
   app.post('/api/metatags', Meta.createTags)
+
+  
+
 
   // With react router, server needs to serve up files
   app.get('*', function (request, response){

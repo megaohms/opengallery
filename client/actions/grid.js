@@ -85,7 +85,8 @@ export function loadData(id, artist, page, search) {
 
     dispatch(requestData());
 
-    return fetch(`http://${window.location.hostname}:${window.location.hostname === '54.153.9.57' ? '80' : '8000'}${endpoint}`, params)
+    var host = window.location.hostname === '54.153.9.57' || window.location.hostname === 'opengallery.io' ? '54.153.9.57' : window.location.hostname;
+    return fetch(`http://${host}:${host === '54.153.9.57' ? '80' : '8000'}${endpoint}`, params)
     .then(response => {
       if (response.status >= 400) {
         dispatch(catchData(data.message))
@@ -94,14 +95,17 @@ export function loadData(id, artist, page, search) {
       return response.json()
     })
     .then(res => {
-      console.log('res on fetch: ', res);
-
       var grid = []
       var data = {}
       if (artist) {
+        dispatch({
+          type: 'UPDATE_PROFILE_FORM_AFTER_FETCH',
+          payload: res.rows[0].artist[0]
+        })
         dispatch(updateArtist(res.rows[0].artist[0]));
       } 
       if (res.rows[artist ? 1 : 0].data !== null) {
+
         res.rows[artist ? 1 : 0].data.forEach((image) => {
           grid.push(image.media_id);
           data[image.media_id] = {

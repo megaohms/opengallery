@@ -1,3 +1,5 @@
+const format = require('pg-format');
+
 exports.isInt = (val) => {
   int = parseInt(val)
   return Number(int) === int && int % 1 === 0
@@ -16,7 +18,7 @@ exports.media = (user) => (`
   (
     SELECT array_agg(tags) AS tags
     FROM (
-      SELECT t.tag_text AS tags
+      SELECT t.text AS tags
       FROM media_tags mt
         INNER JOIN tags t
         ON (mt.tag_id = t.id)
@@ -24,19 +26,20 @@ exports.media = (user) => (`
     ) tags
   ),
   (
-    SELECT mh.hashtag_id
-    FROM media_hashtags mh
-    WHERE mh.media_id = m.id
-    AND mh.user_id = ${ user }
+    SELECT mt.tag_id
+    FROM media_tags mt
+    WHERE mt.media_id = m.id
+    AND mt.user_id = ${ user }
+    AND mt.tag_type = 'hashtag'
     LIMIT 1
   ) AS user_feedback_id,
   (
     SELECT array_to_json(array_agg(row_to_json(f)))
     FROM (
-      SELECT h.id, h.hashtag_text AS tag, mht.total AS count
+      SELECT t.id, t.text AS tag, mht.total AS count
       FROM media_hashtag_totals mht
-        INNER JOIN hashtags h
-        ON (mht.hashtag_id = h.id)
+        INNER JOIN tags t
+        ON (mht.hashtag_id = t.id)
       WHERE mht.media_id = m.id
     ) f
   ) AS feedback
@@ -74,15 +77,22 @@ exports.total_artist = (artist) => (`
   WHERE m.user_id = u.id AND u.username = '${ artist }';
 `)
 
-exports.total_tags = (tags) => (`
-  SELECT COUNT(*) as total_records
-  FROM media m
-    INNER JOIN media_tags mt
-    ON (m.id = mt.media_id)
-    INNER JOIN tags t
-    ON (mt.tag_id = t.id)
-  WHERE t.tag_text ~* ANY ('{${ tags.join(',') }}'::text[])
-`)
+exports.total_tags = (tags) => {
+  var tagsArr = [];
+  tags.forEach((tag) => {
+    tagsArr.push(format.literal(tag));
+  });
+
+  return (`
+    SELECT COUNT(*) as total_records
+    FROM media m
+      INNER JOIN media_tags mt
+      ON (m.id = mt.media_id)
+      INNER JOIN tags t
+      ON (mt.tag_id = t.id)
+    WHERE t.text ~* ANY (ARRAY[${tagsArr.join(',')}])
+  `)
+}
 
 exports.total = (`
   SELECT COUNT(*) as total_records

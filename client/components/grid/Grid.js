@@ -3,7 +3,7 @@ import Tile from '../tile/Tile';
 import { Route } from 'react-router';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-export default class Grid extends React.Component { 
+export default class Grid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,12 +19,12 @@ export default class Grid extends React.Component {
 
   render () {
     let {
-      tile, 
-      grid, 
-      data, 
-      toggleGallery, 
-      id, 
-      username, 
+      tile,
+      grid,
+      data,
+      toggleGallery,
+      id,
+      username,
       loadData,
       page,
       total_photos
@@ -34,7 +34,7 @@ export default class Grid extends React.Component {
     if (total_photos === undefined) {
       return (
         <div id="grid-component">
-          No Photos
+          <div id="grid-error">No Photos</div>
         </div>
       )
     } else {
@@ -42,12 +42,14 @@ export default class Grid extends React.Component {
         <div id="grid-component">
           <div className="grid-section">
             {this.state.hasMounted ? grid.map((mediaId, index) => (
-              <Tile key={index} tile={index} url={data[grid[index]].url_lg} data={data[grid[index]]} handleClick={toggleGallery}/>
+              <div key={index} className="grid-tile-container">
+                <Tile tile={index} mediaId={mediaId} url={data[grid[index]].url_lg} data={data[grid[index]]} handleClick={toggleGallery} deleteMode={this.props.deleteMode} addPhotoToBeDeleted={ this.props.addPhotoToBeDeleted }/>
+              </div>
             )) : ''}
           </div>
-          <div className="button-load">
-            { grid.length < total_photos 
-              ? <RaisedButton label="Load More Images" onMouseUp={() => loadData(id, artist, page)} /> 
+          <div className="grid-load-button">
+            { grid.length < total_photos
+              ? <RaisedButton label="Load More Images" onMouseUp={() => loadData(id, artist, page)} />
               : ''
             }
           </div>

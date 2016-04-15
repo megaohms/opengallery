@@ -8,6 +8,7 @@ module.exports = {
     const message = req.body.message;
     const createdAt = req.body.createdAt;
     const currentConversation = req.body.currentConversation;
+    console.log('message', req.body);
     messagesModel.submitMessage(message, user1_id, user2_id, createdAt, currentConversation)
     .then( (data) => {
       console.log('data', data.rows[0])
@@ -37,6 +38,24 @@ module.exports = {
     .then( (data) => {
       console.log('data', data.rows);
       res.send(data.rows);
+    })
+  },
+
+  fetchOrCreateConversation: (req, res, next) => {
+    var payload = {};
+    const self = req.body.self_id;
+    const user = req.body.user_id;
+    messagesModel.fetchOrCreateConversation(self, user)
+    .then( (data) => {
+      // returns the current conversation
+      payload.currentMessages = data.rows;
+      messagesModel.fetchConversations(self)
+      .then( (data) => {
+        // returns the rest of the conversations
+        payload.allConversations = data.rows;
+        console.log(payload);
+        res.send(payload);
+      })
     })
   }
 

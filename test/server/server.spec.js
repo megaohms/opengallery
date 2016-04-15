@@ -83,7 +83,7 @@ describe('Back End', function() {
 
       });
 
-      it(`Should upload metaData to PostgreSQL, clone and manipulate photo,
+      xit(`Should upload metaData to PostgreSQL, clone and manipulate photo,
         update PostgreSQL with new urls,
         and send back a 201 with the uploadPhoto function`, function(done) {
 
@@ -110,6 +110,25 @@ describe('Back End', function() {
 
     });
 
+    xdescribe('DELETE media', function(done){
+
+      it('responds with a 200 (Deleted) when photo record deleted', function() {
+
+        request(app)
+          .del('/api/media/delete')
+          .field('photos', [618])
+          .expect(200, function(res) {
+            expect(res).to.be.a('object');
+            if (err) {
+              console.log("Error requesting data: ", err);
+              expect(err).to.be.null;
+            }
+          }, done)
+
+      });
+
+    });
+
   });
 =======
 describe('BackEnd', function() {
@@ -118,7 +137,7 @@ describe('BackEnd', function() {
   describe('Database: ', function() {
 
     describe('PostgreSQL Database: ', function() {
-      xit('Should have all the tables', function(done) {
+      it('Should have all the tables', function(done) {
         db.raw("SELECT table_name FROM information_schema.tables WHERE table_schema='public';")
           .then((res) => {
             expect(res.rows).to.deep.include.members([
@@ -126,9 +145,10 @@ describe('BackEnd', function() {
               { table_name: 'media_tags' },
               { table_name: 'media' },
               { table_name: 'media_hashtag_totals' },
+              { table_name: 'media_tag_totals' },
               { table_name: 'users' },
-              { table_name: 'hashtags' },
-              { table_name: 'media_hashtags' }
+              { table_name: 'conversations' },
+              { table_name: 'messages' }
             ]);
             expect(res.rows.length).to.equal(7);
           })
@@ -190,6 +210,13 @@ describe('BackEnd', function() {
       });
       xit('Should have a function called retrievePhotosFromPG', function() {
         expect(mediaModel.retrievePhotosFromPG).to.be.a('function');
+      });
+
+      xit('Should have a function called deletePhotoByIdPG', function() {
+        expect(mediaModel.deletePhotoByIdPG).to.be.a('function');
+      });
+      xit('Should have a function called deletePhotoByIdS3', function() {
+        expect(mediaModel.deletePhotoByIdS3).to.be.a('function');
       });
 
       //Writing to DB Tests
@@ -266,6 +293,36 @@ describe('BackEnd', function() {
           done(err);
         });
       });
+
+      xit('Should delete photos from S3 database', function(done) {
+        mediaModel.deletePhotoByIdS3(621)
+        .then(function(data) {
+          expect(data).to.be.a('object');
+          // db.destroy();
+          done();
+        })
+        .catch(function(err) {
+          expect(err).to.be.null;
+          // db.destroy();
+          done(err);
+        });
+      });
+
+      xit('Should delete photo record from PostgreSQL database', function(done) {
+        mediaModel.deletePhotoByIdPG(617)
+        .then(function(data) {
+          console.log(data);
+          expect(data).to.be.a('object');
+          // db.destroy();
+          done();
+        })
+        .catch(function(err) {
+          expect(err).to.be.null;
+          // db.destroy();
+          done(err);
+        });
+      });
+
     });
 
     describe('MediaTags Model: ', function() {
